@@ -1,0 +1,11 @@
+actor: ApiTester
+modules:
+    enabled:
+        - REST:
+            url: http://localhost/ex9/API.php
+            depends: PhpBrowser
+            part: Json
+
+
+            
+ 
