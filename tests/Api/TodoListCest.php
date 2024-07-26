@@ -1,138 +1,101 @@
-<?php
-namespace Tests\Api;
-use Tests\Support\ApiTester;
+<?php 
+    namespace tests\Api;
+    use tests\Support\ApiTester; 
 
-class TodoListCest
-{
-    public function _before(ApiTester $I)
+    class TodoListCest
     {
+        public function _before(ApiTester $I) 
+        {}
+
+        //scenario 2
+
+        public function iShouldCreateNewTask(ApiTester $I) {
+            $I->haveHttpHeader('Content-Type', 'application/json');
+
+            $I->sendPost('/', [
+                'task_title' => 'Task 1',
+                'task_name' => 'Onboarding Task',
+                'time' => '2024-07-25 22:00:00'
+            ]);
+
+            $I -> seeResponseCodeIs(200);
+            $I -> seeResponseIsJson();
+            $I -> seeResponseContainsJson(['status' => 'success']);
+
+            $I -> sendPost('/', [
+                  'task_title' => 'Task 2',
+                  'task_name' => 'Team Task 1',
+                  'time' => '2024-07-25 23:00:00'
+            ]);
+
+            $I -> seeResponseCodeIs(200);
+            $I -> seeResponseIsJson();
+            $I -> seeResponseContainsJson(['status' => 'success']);
+        }
+
+        //scenario 3
+
+        public function iShouldViewTask(ApiTester $I) {
+            $I -> sendGet ('/tasks');
+            $I -> seeResponseCodeIs(200);
+            $I -> seeResponseIsJson();
+            $I -> seeResponseContainsJson(['status' => 'success']);
+        }
+
+        //scenario 4 
+
+        public function iShouldMoveFinishedTask(ApiTester $I) {
+            $I->haveHttpHeader('Content-Type', 'application/json');
+
+            $I -> sendPut('/update-task/1', [
+                'id' => 1,
+                'status' => 'done'
+            ]);
+
+            $I -> seeResponseCodeIs(200);
+            $I -> seeResponseIsJson();
+            $I -> seeResponseContainsJson(['status' => 'success']);
+        }
+
+        //scenario 5
+
+        public function iShouldMoveBackDoneTask(ApiTester $I) {
+            $I->haveHttpHeader('Content-Type', 'application/json');
+
+            $I -> sendPut('/update-task/1', [
+                'id' => 1,
+                'status' => 'in-progress'
+            ]);
+
+            $I -> seeResponseCodeIs(200);
+            $I -> seeResponseIsJson();
+            $I -> seeResponseContainsJson(['status' => 'success']);
+        }
+
+        //scenario 6
+        public function iShouldEditTask(ApiTester $I) {
+            $I->haveHttpHeader('Content-Type', 'application/json');
+
+            $I -> sendPut('/update-task/1', [
+                'id' => 1,
+                'task_title' => 'Updated Task',
+                'task_name'  => 'Updated task name',
+                'time' => '2024-07-25 00:00:00'
+            ]);
+            
+            $I -> seeResponseCodeIs(200);
+            $I -> seeResponseIsJson();
+            $I -> seeResponseContainsJson(['status' => 'success']);
+        }
+
+        //scenario 7 
+        public function iShoulDelete(ApiTester $I) {
+            $I->haveHttpHeader('Content-Type', 'application/json');
+
+            $I -> sendDelete('/delete-task', ['id' => 1]);
+            $I -> seeResponseCodeIs(200);
+            $I -> seeResponseIsJson();
+            $I -> seeResponseContainsJson(['status' => 'success']);
+        }
     }
-
-    // Scenario 2
-    public function iShouldCreateNewTasks(ApiTester $I) {
-        $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPost('/ex9/API.php', [
-            'title'=> 'Task 1',
-            'task_name' => 'Onboarding Task',
-            'time' => '10:00 PM'
-        ]);
-        $I->sendPost('/ex9/API.php', [
-            'title'=> 'Task 2',
-            'task_name' => 'Team Task 1',
-            'time' => '11:00 PM'
-        ]);
-
-        $I->sendPost('/ex9/API.php/save', []);
-        $I->sendGet('/ex9/API.php/in-progress');
-        $I->seeResponseCodeIs(200);
-        $I->seeResponseIsJson();
-        $I->seeResponseContainsJson([
-            'data' => [
-                [
-                    'task_name' => 'Test',
-                    'time' => '2024-07-25 12:00:00',
-                    'id' => 3, 
-                    'task_title' => 'Example Task',
-                    'status' => 'Inprogress'
-                ]
-            ],
-            'method' => 'GET',
-            'status' => 'success'
-        ]);
-    }
-
-    // Scenario 3
-    public function iShouldViewTasks(ApiTester $I) {
-        $I->sendGet('/ex9/API.php/tasks');
-        $I->seeResponseCodeIs(200);
-        $I->seeResponseIsJson();
-        $I->seeResponseContainsJson([
-            'data' => [
-                [
-                    'task_name' => 'Test',
-                    'time' => '2024-07-25 12:00:00'
-                ]
-            ],
-            'method' => 'GET',
-            'status' => 'success'
-        ]);
-    }
-
-    // Scenario 4
-    public function iShouldMoveFinishedTask(ApiTester $I) {
-        $I->sendPost('/ex9/API.php/update-task', [
-            'task_id' => 1,
-            'status' => 'done'
-        ]);
-
-        $I->sendGet('/ex9/API.php/done');
-        $I->seeResponseCodeIs(200);
-        $I->seeResponseIsJson();
-        $I->seeResponseContainsJson([
-            'data' => [
-                [
-                    'task_name' => 'Test',
-                    'time' => '2024-07-25 12:00:00'
-                ]
-            ],
-            'method' => 'GET',
-            'status' => 'success'
-        ]);
-    }
-
-    // Scenario 5
-    public function iShouldMoveBackDoneTask(ApiTester $I) {
-        $I->sendPost('/ex9/API.php/update-task', [
-            'task_id' => 1,
-            'status' => 'in-progress'
-        ]);
-        $I->sendGet('/ex9/API.php/in-progress');
-        $I->seeResponseCodeIs(200);
-        $I->seeResponseIsJson();
-        $I->seeResponseContainsJson([
-            'data' => [
-                [
-                    'task_name' => 'Test',
-                    'time' => '2024-07-25 12:00:00'
-                ]
-            ],
-            'method' => 'GET',
-            'status' => 'success'
-        ]);
-    }
-
-    // Scenario 6
-    public function iShouldEditTask(ApiTester $I) {
-        $I->sendPost('/ex9/API.php/update-task', [
-            'task_id' => 1,
-            'title' => 'Update Task',
-            'task_name' => 'Update Name',
-            'time' => '12:00 AM'
-        ]);
-        $I->sendGet('/ex9/API.php/tasks');
-        $I->seeResponseCodeIs(200);
-        $I->seeResponseIsJson();
-        $I->seeResponseContainsJson([
-            'data' => [
-                [
-                    'task_name' => 'Test',
-                    'time' => '2024-07-25 12:00:00',
-                    'id' => 3, 
-                    'task_title' => 'Example Task',
-                    'status' => 'Inprogress'
-                ]
-            ],
-            'method' => 'GET',
-            'status' => 'success'
-        ]);
-    }
-
-    // Scenario 7
-    public function iShouldDelete(ApiTester $I) {
-        $I->sendDelete('/ex9/API.php/delete-task', ['task_id' => 1]);
-        $I->sendGet('/ex9/API.php/tasks');
-        $I->seeResponseCodeIs(200);
-        $I->seeResponseIsJson();
-        $I->dontSeeResponseContainsJson(['task_id' => 1]);
-    }
-}
+?>

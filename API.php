@@ -217,9 +217,28 @@ if ($request_method === 'GET') {
     if ($request_method === 'PUT' || $request_method === 'DELETE') {
         $request_uri = $_SERVER['REQUEST_URI'];
         $exploded_request_uri = array_values(explode("/", $request_uri));
-        $ids = end($exploded_request_uri);
+        $ids = end($exploded_request_uri); 
     }
-    $received_data = json_decode(file_get_contents('php://input'), true);
+    $raw_input = file_get_contents('php://input');
+    $received_data = json_decode($raw_input, true);
+
+    // Check for JSON errors
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        return [
+            'method' => 'PUT',
+            'status' => 'error',
+            'message' => 'Invalid JSON: ' . json_last_error_msg()
+        ];
+    }
+
+    // Check if the payload is empty
+    if (empty($received_data)) {
+        return [
+            'method' => 'PUT',
+            'status' => 'error',
+            'message' => 'Payload cannot be empty.'
+        ];
+    }
 }
 
 // Create an instance of the API class
