@@ -22,7 +22,7 @@ class API {
 {
     if (!is_array($payload)) {
         return [
-            'method' => 'GET',
+            
             'status' => 'error',
             'message' => 'Invalid Payload. Payload must be an array.'
         ];
@@ -36,13 +36,13 @@ class API {
         $results = $this->db->get('tbl_to_do_list');
         if ($results) {
             return [
-                'method' => 'GET',
+                
                 'status' => 'success',
                 'data' => $results
             ];
         } else {
             return [
-                'method' => 'GET',
+                
                 'status' => 'fail',
                 'message' => 'Failed Fetch Request'
             ];
@@ -50,7 +50,7 @@ class API {
     } catch (Exception $e) {
         file_put_contents('error_log.txt', "GET Error: " . $e->getMessage(), FILE_APPEND);
         return [
-            'method' => 'GET',
+            
             'status' => 'error',
             'message' => 'An error occurred: ' . $e->getMessage()
         ];
@@ -67,7 +67,7 @@ class API {
     {
         if (!is_array($payload) || empty($payload)) {
             return [
-                'method' => 'POST',
+                
                 'status' => 'error',
                 'message' => 'Invalid or empty payload.'
             ];
@@ -77,14 +77,14 @@ class API {
             $id = $this->db->insert('tbl_to_do_list', $payload);
             if ($id) {
                 return [
-                    'method' => 'POST',
+                    
                     'status' => 'success',
                     'message' => 'Data successfully inserted',
                     'id' => $id
                 ];
             } else {
                 return [
-                    'method' => 'POST',
+                    
                     'status' => 'fail',
                     'message' => 'Failed to insert data'
                 ];
@@ -92,7 +92,7 @@ class API {
         } catch (Exception $e) {
             file_put_contents('error_log.txt', "POST Error: " . $e->getMessage(), FILE_APPEND);
             return [
-                'method' => 'POST',
+                
                 'status' => 'error',
                 'message' => 'An error occurred: ' . $e->getMessage()
             ];
@@ -110,7 +110,7 @@ class API {
 {
     if (empty($id)) {
         return [
-            'method' => 'PUT',
+            
             'status' => 'error',
             'message' => 'ID cannot be empty.'
         ];
@@ -118,7 +118,7 @@ class API {
 
     if (empty($payload)) {
         return [
-            'method' => 'PUT',
+            
             'status' => 'error',
             'message' => 'Payload cannot be empty.'
         ];
@@ -126,7 +126,7 @@ class API {
 
     if ($id != $payload['id']) {
         return [
-            'method' => 'PUT',
+            
             'status' => 'error',
             'message' => 'ID mismatch.'
         ];
@@ -136,13 +136,13 @@ class API {
         $this->db->where('id', $id);
         if ($this->db->update('tbl_to_do_list', $payload)) {
             return [
-                'method' => 'PUT',
+                
                 'status' => 'success',
                 'message' => 'Data successfully updated'
             ];
         } else {
             return [
-                'method' => 'PUT',
+                
                 'status' => 'fail',
                 'message' => 'Failed to update data'
             ];
@@ -150,7 +150,7 @@ class API {
     } catch (Exception $e) {
         file_put_contents('error_log.txt', "PUT Error: " . $e->getMessage(), FILE_APPEND);
         return [
-            'method' => 'PUT',
+            
             'status' => 'error',
             'message' => 'An error occurred: ' . $e->getMessage()
         ];
@@ -168,7 +168,7 @@ class API {
     {
         if (empty($id)) {
             return [
-                'method' => 'DELETE',
+                
                 'status' => 'error',
                 'message' => 'ID cannot be empty.'
             ];
@@ -183,13 +183,13 @@ class API {
         try {
             if ($this->db->delete('tbl_to_do_list')) {
                 return [
-                    'method' => 'DELETE',
+                    
                     'status' => 'success',
                     'message' => 'Data successfully deleted'
                 ];
             } else {
                 return [
-                    'method' => 'DELETE',
+                    
                     'status' => 'fail',
                     'message' => 'Failed to delete data'
                 ];
@@ -197,7 +197,7 @@ class API {
         } catch (Exception $e) {
             file_put_contents('error_log.txt', "DELETE Error: " . $e->getMessage(), FILE_APPEND);
             return [
-                'method' => 'DELETE',
+                
                 'status' => 'error',
                 'message' => 'An error occurred: ' . $e->getMessage()
             ];

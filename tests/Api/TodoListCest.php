@@ -91,7 +91,6 @@
         //scenario 7 
         public function iShoulDelete(ApiTester $I) {
             $I->haveHttpHeader('Content-Type', 'application/json');
-
             $I -> sendDelete('/delete-task', ['id' => 1]);
             $I -> seeResponseCodeIs(200);
             $I -> seeResponseIsJson();
