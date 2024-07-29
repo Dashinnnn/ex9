@@ -209,7 +209,7 @@ class API {
 // Handling the request
 $request_method = $_SERVER['REQUEST_METHOD'];
 $received_data = [];
-$ids = null; // Initialize $ids variable
+$ids = null; 
 
 if ($request_method === 'GET') {
     $received_data = $_GET;
